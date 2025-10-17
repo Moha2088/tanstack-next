@@ -10,7 +10,6 @@ export default function Home() {
     const queryClient = new QueryClient()
 
     const [isButtonClicked, setIsButtonClicked] = useState<boolean>(false)
-    const [user, setUser] = useState<Todo>()
 
     return (
         <QueryClientProvider client={queryClient}>

@@ -16,6 +16,15 @@ export default function Home() {
   const [fetchData, setFetchData] = useState<boolean>(false);
   const [postData, setPostData] = useState<boolean>(false);
 
+  useEffect(() => {
+    if (postData) {
+      setPostData(false);
+    }
+    if (fetchData) {
+      setFetchData(false);
+    }
+  }, [postData, fetchData]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <div className="flex justify-center items-center mt-10 mb-10 flex-col">
@@ -36,7 +45,11 @@ export default function Home() {
           >
             Post Data
           </button>
-          <div>{postData && <p>POST request success!</p>}</div>
+          <div>
+            {postData && 
+                <PostData />
+            }
+            </div>
         </div>
       </div>
     </QueryClientProvider>
@@ -46,7 +59,10 @@ export default function Home() {
 function PostData() {
   const mutation = useMutation({
     mutationFn: async (newTodo: Todo) => {
-      await axios.post("https://jsonplaceholder.typicode.com/todos", newTodo);
+      const response = await axios.post(
+        "https://jsonplaceholder.typicode.com/todos",
+        newTodo
+      );
     },
     onSuccess: () => {
       console.log("Data posted successfully");
@@ -61,6 +77,8 @@ function PostData() {
       completed: false,
     });
   }, [mutation]);
+
+  return null;
 }
 
 function FetchData() {

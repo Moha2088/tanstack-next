@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "compile": "tsc --pretty --strict"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.5",

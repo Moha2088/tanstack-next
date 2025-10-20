@@ -7,20 +7,17 @@ interface PostFormProps {
 }
 
 export default function PostForm(props: PostFormProps) {
-    const [id, setId] = useState<number>();
-
-    const [userId, setUserId] = useState<number>();
-
-    const [title, setTitle] = useState("");
-
-    const [completed, setCompleted] = useState<boolean>(false);
+    const [id, setId] = useState<number>()
+    const [userId, setUserId] = useState<number>()
+    const [title, setTitle] = useState("")
+    const [completed, setCompleted] = useState<boolean>(false)
 
     const handleDropdown = (selectEvent:ChangeEvent<HTMLSelectElement>) => {
-        setCompleted(Boolean(selectEvent.target.value));
+        setCompleted(Boolean(selectEvent.target.value))
     }
 
     return (
-        <div className="flex justify-center items-center flex-col border-2 rounded-md p-10">
+        <div className="flex justify-center items-center flex-col rounded-md p-10 shadow-2xl">
             <form
                 onSubmit={(event) => event.preventDefault() }
                 className="mb-5">

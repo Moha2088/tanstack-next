@@ -23,3 +23,6 @@ jobs:
 
     - name: Compile project
       run: npm run compile
+
+    - name: Test lint
+      run: npm run lint

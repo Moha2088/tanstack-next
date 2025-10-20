@@ -1,4 +1,4 @@
-import { JSX, useState } from "react"
+import { useState } from "react"
 import { Todo } from "@/app/types/types"
 import Button from "@/app/components/ui/Button"
 

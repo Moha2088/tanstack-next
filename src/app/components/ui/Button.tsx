@@ -6,7 +6,7 @@ export default function Button(props: ButtonProps) {
 
     return (
         <button
-            className=" rounded-md p-3 bg-black text-white text-sm font-bold cursor-pointer"
+            className=" rounded-md p-3 bg-black text-white text-sm font-bold cursor-pointer hover:bg-neutral-600"
             {...props}
         >
         </button>

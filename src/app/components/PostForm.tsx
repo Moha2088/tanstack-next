@@ -3,7 +3,7 @@ import { Todo } from "@/app/types/types"
 import Button from "@/app/components/ui/Button"
 
 interface PostFormProps {
-    HandleFormData (todo: Todo): void
+    HandleFormData(todo: Todo): void
 }
 
 export default function PostForm(props: PostFormProps) {
@@ -16,47 +16,48 @@ export default function PostForm(props: PostFormProps) {
     const [completed, setCompleted] = useState<boolean>(false);
 
     return (
-        <div className="flex justify-center items-center flex-col border-2 rounded-md p-5">
-            <form>
+        <div className="flex justify-center items-center flex-col border-2 rounded-md p-10">
+            <form className="mb-5">
                 <div>
                     <label>Id</label>
-                    <input 
-                        className="border-2 rounded-md"
+                    <input
+                        className="border-2 rounded-md flex items-center"
                         type="text"
-                        value={id} 
-                        onChange={(idInput) => setId(Number(idInput.target.value))} />
+                        value={id}
+                        onChange={(idInput) => setId(Number(idInput.target.value))}/>
                 </div>
                 <div>
                     <label>UserId</label>
-                    <input 
-                        className="border-2 rounded-md"
+                    <input
+                        className="border-2 rounded-md flex items-center"
                         type="text"
-                        value={userId} 
+                        value={userId}
                         onChange={(userIdInput) => setUserId(Number(userIdInput.target.value))}/>
                 </div>
                 <div>
                     <label>Title</label>
-                    <input className="border-2 rounded-md" 
+                    <input className="border-2 rounded-md flex items-center"
                            type="text"
-                           value={title} 
+                           value={title}
                            onChange={(titleInput) => setTitle(titleInput.target.value)}/>
                 </div>
                 <div>
                     <label>Completed</label>
-                    <input 
-                        className="border-2 rounded-md" 
+                    <input
+                        className="border-2 rounded-md flex items-center"
                         type="text"
                         value={String(completed)}
-                        onChange={(completedInput) => setCompleted(Boolean(completedInput.target.value))} />
+                        onChange={(completedInput) => setCompleted(Boolean(completedInput.target.value))}/>
                 </div>
             </form>
 
-            <Button onClick={() => props.HandleFormData({
-                id: id,
-                userId: userId,
-                title: title,
-                completed: completed,
-            })}>
+            <Button
+                onClick={() => props.HandleFormData({
+                    id: id,
+                    userId: userId,
+                    title: title,
+                    completed: completed,
+                })}>
                 Post Data
             </Button>
         </div>

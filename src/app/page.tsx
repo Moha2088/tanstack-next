@@ -6,17 +6,20 @@ import {
     useMutation,
     useQuery,
 } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { Todo } from "@/app/types/types";
-import axios from "axios";
+import { useEffect, useState } from "react"
+import { Todo } from "@/app/types/types"
+import axios from "axios"
 import Button from "@/app/components/ui/Button"
 import PostForm from "@/app/components/PostForm"
+import { todo } from "node:test";
 
 const queryClient = new QueryClient();
 
 export default function Home() {
     const [fetchData, setFetchData] = useState<boolean>(false);
     const [postData, setPostData] = useState<boolean>(false);
+
+    const [todo, setTodo] = useState<Todo>()
 
     useEffect(() => {
         if (postData) {
@@ -29,6 +32,12 @@ export default function Home() {
         }
     }, [postData, fetchData]);
 
+
+    const handleFormData = (todo: Todo) => {
+        setTodo(todo)
+        setPostData(true)
+    }
+
     return (
         <QueryClientProvider client={queryClient}>
             <div className="flex justify-center items-center mt-10 mb-10 flex-col">
@@ -39,17 +48,27 @@ export default function Home() {
                         Fetch Data
                     </Button>
                 </div>
-                <div className="flex justify-center">{fetchData && <FetchData/>}</div>
+                <div className="flex justify-center">
+                    {fetchData &&
+                        <FetchData/>
+                    }</div>
                 <div>
-
-                    <PostForm />
+                    <PostForm HandleFormData={handleFormData}/>
 
                     <Button
                         onClick={() => setPostData(true)}
                     >
                         Post Data
                     </Button>
-                    <div>{postData && <PostData/>}</div>
+                    <div>
+                        {postData &&
+                            <PostData
+                                id={todo?.id}
+                                userId={todo?.userId}
+                                title={todo?.title}
+                                completed={todo?.completed}/>
+                        }
+                    </div>
                 </div>
             </div>
         </QueryClientProvider>
@@ -57,6 +76,7 @@ export default function Home() {
 }
 
 function PostData(todo: Todo) {
+
     const mutation = useMutation({
         mutationFn: async (newTodo: Todo) => {
             const response = await axios.post(
@@ -67,16 +87,20 @@ function PostData(todo: Todo) {
         onSuccess: () => {
             console.log("Data posted successfully");
         },
+
+        onError: (err) => {
+            console.log("Error fetching data: ", `${err.name} : ${err.message}`)
+        }
     });
 
     useEffect(() => {
         mutation.mutate({
-            id: 300,
-            userId: 400,
-            title: "New Todo Item",
-            completed: false,
+            id: todo.id,
+            userId: todo.userId,
+            title: todo.title,
+            completed: todo.completed,
         });
-    }, [mutation]);
+    }, [mutation, todo]);
 
     return null;
 }

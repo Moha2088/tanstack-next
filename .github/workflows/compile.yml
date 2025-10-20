@@ -1,10 +1,8 @@
 name: Compile TS
 
 on:
-  push:
-    branches: [ "master" ]
   pull_request:
-    branches: ["master"]
+    types: [ opened ]
   workflow_dispatch:
 
 
@@ -13,16 +11,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 22
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 22
 
-    - name: Install npm packages
-      run: npm ci
+      - name: Install npm packages
+        run: npm ci
 
-    - name: Compile project
-      run: npm run compile
+      - name: Compile project
+        run: npm run compile
 
-    - name: Test lint
-      run: npm run lint
+      - name: Test lint
+        run: npm run lint

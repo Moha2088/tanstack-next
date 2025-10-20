@@ -70,6 +70,8 @@ export default function Home() {
 }
 
 function PostData(todo: Todo) {
+    console.log("Completed value :" + todo.completed)
+
     const mutation = useMutation({
         mutationFn: async (newTodo: Todo) => {
             await apiClient.post(

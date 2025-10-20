@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { ChangeEvent, useState } from "react"
 import { Todo } from "@/app/types/types"
 import Button from "@/app/components/ui/Button"
 
@@ -15,9 +15,15 @@ export default function PostForm(props: PostFormProps) {
 
     const [completed, setCompleted] = useState<boolean>(false);
 
+    const handleDropdown = (selectEvent:ChangeEvent<HTMLSelectElement>) => {
+        setCompleted(Boolean(selectEvent.target.value));
+    }
+
     return (
         <div className="flex justify-center items-center flex-col border-2 rounded-md p-10">
-            <form className="mb-5">
+            <form
+                onSubmit={(event) => event.preventDefault() }
+                className="mb-5">
                 <div>
                     <label>Id</label>
                     <input
@@ -43,11 +49,19 @@ export default function PostForm(props: PostFormProps) {
                 </div>
                 <div>
                     <label>Completed</label>
-                    <input
-                        className="border-2 rounded-md flex items-center"
-                        type="text"
-                        value={String(completed)}
-                        onChange={(completedInput) => setCompleted(Boolean(completedInput.target.value))}/>
+                    <select
+                        id="completedDropdown"
+                        className="border-2 rounded-md flex items-center w-full"
+                        onChange={(event) => handleDropdown(event)}
+                    >
+                        <option>-- Please select a value --</option>
+                        <option value="True">
+                            True
+                        </option>
+                        <option value="False">
+                            False
+                        </option>
+                    </select>
                 </div>
             </form>
 

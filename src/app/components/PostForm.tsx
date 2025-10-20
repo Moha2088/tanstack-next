@@ -57,7 +57,7 @@ export default function PostForm(props: PostFormProps) {
                 title: title,
                 completed: completed,
             })}>
-                Submit
+                Post Data
             </Button>
         </div>
     )

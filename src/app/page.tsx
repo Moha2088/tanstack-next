@@ -8,10 +8,9 @@ import {
 } from "@tanstack/react-query";
 import { useEffect, useState } from "react"
 import { Todo } from "@/app/types/types"
-import axios from "axios"
+import { apiClient } from "@/app/api/apiClient"
 import Button from "@/app/components/ui/Button"
 import PostForm from "@/app/components/PostForm"
-import { todo } from "node:test";
 
 const queryClient = new QueryClient();
 
@@ -55,11 +54,6 @@ export default function Home() {
                 <div>
                     <PostForm HandleFormData={handleFormData}/>
 
-                    <Button
-                        onClick={() => setPostData(true)}
-                    >
-                        Post Data
-                    </Button>
                     <div>
                         {postData &&
                             <PostData
@@ -76,33 +70,34 @@ export default function Home() {
 }
 
 function PostData(todo: Todo) {
-
     const mutation = useMutation({
         mutationFn: async (newTodo: Todo) => {
-            const response = await axios.post(
-                "https://jsonplaceholder.typicode.com/todos",
+            await apiClient.post(
+                "/todos",
                 newTodo
             );
         },
         onSuccess: () => {
             console.log("Data posted successfully");
         },
-
         onError: (err) => {
-            console.log("Error fetching data: ", `${err.name} : ${err.message}`)
+            console.log("Error fetching data:\n", `${err.name} : ${err.message}`)
+            return
         }
     });
 
-    useEffect(() => {
-        mutation.mutate({
-            id: todo.id,
-            userId: todo.userId,
-            title: todo.title,
-            completed: todo.completed,
-        });
-    }, [mutation, todo]);
+    mutation.mutate({
+        id: todo.id,
+        userId: todo.userId,
+        title: todo.title,
+        completed: todo.completed,
+    });
 
-    return null;
+    return (
+        <div>
+            <p>Data Posted successfully!</p>
+        </div>
+    )
 }
 
 function FetchData() {
@@ -121,16 +116,16 @@ function FetchData() {
     return (
         <div>
             <h1>
-                <strong>Title: </strong> {data.title}{" "}
+                <strong>Title: </strong> {data.title}
             </h1>
             <p>
-                <strong>Id: </strong> {data.id}{" "}
+                <strong>Id: </strong> {data.id}
             </p>
             <p>
-                <strong>UserId: </strong> {data.userId}{" "}
+                <strong>UserId: </strong> {data.userId}
             </p>
             <p>
-                <strong>IsCompleted: </strong> {data.completed}{" "}
+                <strong>IsCompleted: </strong> {data.completed}
             </p>
         </div>
     );

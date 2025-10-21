@@ -11,6 +11,7 @@ import { Todo } from "@/app/types/types"
 import { apiClient } from "@/app/api/apiClient"
 import Button from "@/app/components/ui/Button"
 import PostForm from "@/app/components/PostForm"
+import { Spinner } from "@/components/ui/shadcn-io/spinner"
 
 const queryClient = new QueryClient()
 
@@ -89,7 +90,7 @@ function PostData(todo: Todo) {
         },
         onMutate: () => {
             console.log("Posting data..")
-    },
+        },
         onSuccess: () => {
             console.log("Data posted successfully")
         },
@@ -123,7 +124,18 @@ function FetchData(props: FetchDataProps) {
             ),
     })
 
-    if (isPending) return <p>Fetching todo with id: {props.id}...</p>
+    if (isPending)
+        return (
+            <div className="flex justify-center items-center flex-col">
+                <Spinner
+                    className="text-shadow-gray-300"
+                    size={60}
+                    variant="circle-filled"/>
+                <div>
+                    <p>Fetching todo with id: {props.id}...</p>
+                </div>
+            </div>
+        )
 
     if (error) return <p>Error fetching data!: {error.message}</p>
 

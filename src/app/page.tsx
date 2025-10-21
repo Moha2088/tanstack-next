@@ -18,6 +18,8 @@ export default function Home() {
     const [fetchData, setFetchData] = useState<boolean>(false)
     const [postData, setPostData] = useState<boolean>(false)
 
+    const [idQuery, setIdQuery] = useState<number>(0)
+
     const [todo, setTodo] = useState<Todo>()
 
     useEffect(() => {
@@ -40,16 +42,22 @@ export default function Home() {
     return (
         <QueryClientProvider client={queryClient}>
             <div className="flex justify-center items-center mt-10 mb-10 flex-col">
-                <div className="mb-10">
-                    <Button
-                        onClick={() => setFetchData(true)}
-                    >
-                        Fetch Data
-                    </Button>
+                <div className="flex justify-center items-center mb-10 flex-col">
+                    <input
+                        className="border-2 rounded-md flex items-center p-1 mb-2"
+                        value={idQuery}
+                        onChange={(val) => setIdQuery(Number(val.target.value))}/>
+                    <div>
+                        <Button
+                            onClick={() => setFetchData(true)}
+                        >
+                            Fetch Data
+                        </Button>
+                    </div>
                 </div>
                 <div className="flex justify-center">
                     {fetchData &&
-                        <FetchData/>
+                        <FetchData id={idQuery}/>
                     }</div>
                 <div>
                     <PostForm HandleFormData={handleFormData}/>
@@ -79,6 +87,9 @@ function PostData(todo: Todo) {
                 newTodo
             )
         },
+        onMutate: () => {
+            console.log("Posting data..")
+    },
         onSuccess: () => {
             console.log("Data posted successfully")
         },
@@ -95,23 +106,24 @@ function PostData(todo: Todo) {
         completed: todo.completed,
     })
 
-    return (
-        <div>
-            <p>Data Posted successfully!</p>
-        </div>
-    )
+    return null
 }
 
-function FetchData() {
+
+export interface FetchDataProps {
+    id: number
+}
+
+function FetchData(props: FetchDataProps) {
     const {isPending, error, data} = useQuery({
         queryKey: ["todoData"],
         queryFn: () =>
-            fetch("https://jsonplaceholder.typicode.com/todos/2").then((res) =>
+            fetch(`https://jsonplaceholder.typicode.com/todos/${props.id}`).then((res) =>
                 res.json()
             ),
     })
 
-    if (isPending) return <p>Loading</p>
+    if (isPending) return <p>Fetching todo with id: {props.id}...</p>
 
     if (error) return <p>Error fetching data!: {error.message}</p>
 

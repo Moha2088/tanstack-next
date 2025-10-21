@@ -24,7 +24,7 @@ export default function PostForm(props: PostFormProps) {
                 <div>
                     <label>Id</label>
                     <input
-                        className="border-2 rounded-md flex items-center"
+                        className="border-2 rounded-md flex items-center p-1"
                         type="text"
                         value={id}
                         onChange={(idInput) => setId(Number(idInput.target.value))}/>
@@ -32,14 +32,14 @@ export default function PostForm(props: PostFormProps) {
                 <div>
                     <label>UserId</label>
                     <input
-                        className="border-2 rounded-md flex items-center"
+                        className="border-2 rounded-md flex items-center p-1"
                         type="text"
                         value={userId}
                         onChange={(userIdInput) => setUserId(Number(userIdInput.target.value))}/>
                 </div>
                 <div>
                     <label>Title</label>
-                    <input className="border-2 rounded-md flex items-center"
+                    <input className="border-2 rounded-md flex items-center p-1"
                            type="text"
                            value={title}
                            onChange={(titleInput) => setTitle(titleInput.target.value)}/>

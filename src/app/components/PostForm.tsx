@@ -10,7 +10,7 @@ export default function PostForm(props: PostFormProps) {
     const [id, setId] = useState<number>()
     const [userId, setUserId] = useState<number>()
     const [title, setTitle] = useState("")
-    const [completed, setCompleted] = useState<boolean>(false);
+    const [completed, setCompleted] = useState<boolean>(false)
 
     const handleDropdown = (selectEvent:ChangeEvent<HTMLSelectElement>) => {
         setCompleted(Boolean(selectEvent.target.value))

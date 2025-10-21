@@ -13,7 +13,7 @@ export default function PostForm(props: PostFormProps) {
     const [completed, setCompleted] = useState<boolean>(false)
 
     const handleDropdown = (selectEvent:ChangeEvent<HTMLSelectElement>) => {
-        setCompleted(Boolean(selectEvent.target.value))
+        setCompleted(selectEvent.target.value == "true")
     }
 
     return (

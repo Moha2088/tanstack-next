@@ -12,14 +12,23 @@ export default function PostForm(props: PostFormProps) {
     const [title, setTitle] = useState("")
     const [completed, setCompleted] = useState<boolean>(false)
 
-    const handleDropdown = (selectEvent:ChangeEvent<HTMLSelectElement>) => {
-        setCompleted(Boolean(selectEvent.target.value))
+    const handleDropdown = (selectEvent: ChangeEvent<HTMLSelectElement>) => {
+        if (selectEvent.target.value == "-- Please select a value --") {
+            return
+        }
+
+        setCompleted(selectEvent.target.value === "false")
+        console.log(completed)
+    }
+
+    const hasInput = () => {
+        return !isNaN(Number(id)) && !isNaN(Number(userId)) && title != ""
     }
 
     return (
         <div className="flex justify-center items-center flex-col rounded-md p-10 shadow-2xl">
             <form
-                onSubmit={(event) => event.preventDefault() }
+                onSubmit={(event) => event.preventDefault()}
                 className="mb-5">
                 <div>
                     <label>Id</label>
@@ -52,10 +61,10 @@ export default function PostForm(props: PostFormProps) {
                         onChange={(event) => handleDropdown(event)}
                     >
                         <option>-- Please select a value --</option>
-                        <option value="True">
+                        <option value="true">
                             True
                         </option>
-                        <option value="False">
+                        <option value="false">
                             False
                         </option>
                     </select>
@@ -68,7 +77,9 @@ export default function PostForm(props: PostFormProps) {
                     userId: userId,
                     title: title,
                     completed: completed,
-                })}>
+                })
+                }
+                disabled={!hasInput()}>
                 Post Data
             </Button>
         </div>

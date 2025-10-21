@@ -1,35 +1,35 @@
-"use client";
+"use client"
 
 import {
     QueryClient,
     QueryClientProvider,
     useMutation,
     useQuery,
-} from "@tanstack/react-query";
+} from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { Todo } from "@/app/types/types"
 import { apiClient } from "@/app/api/apiClient"
 import Button from "@/app/components/ui/Button"
 import PostForm from "@/app/components/PostForm"
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient()
 
 export default function Home() {
-    const [fetchData, setFetchData] = useState<boolean>(false);
-    const [postData, setPostData] = useState<boolean>(false);
+    const [fetchData, setFetchData] = useState<boolean>(false)
+    const [postData, setPostData] = useState<boolean>(false)
 
     const [todo, setTodo] = useState<Todo>()
 
     useEffect(() => {
         if (postData) {
-            setPostData(false);
+            setPostData(false)
         }
         if (fetchData) {
             setTimeout(() => {
-                setFetchData(false);
-            }, 5000);
+                setFetchData(false)
+            }, 5000)
         }
-    }, [postData, fetchData]);
+    }, [postData, fetchData])
 
 
     const handleFormData = (todo: Todo) => {
@@ -66,32 +66,34 @@ export default function Home() {
                 </div>
             </div>
         </QueryClientProvider>
-    );
+    )
 }
 
 function PostData(todo: Todo) {
+    console.log("Completed value :" + todo.completed)
+
     const mutation = useMutation({
         mutationFn: async (newTodo: Todo) => {
             await apiClient.post(
                 "/todos",
                 newTodo
-            );
+            )
         },
         onSuccess: () => {
-            console.log("Data posted successfully");
+            console.log("Data posted successfully")
         },
         onError: (err) => {
             console.log("Error fetching data:\n", `${err.name} : ${err.message}`)
             return
         }
-    });
+    })
 
     mutation.mutate({
         id: todo.id,
         userId: todo.userId,
         title: todo.title,
         completed: todo.completed,
-    });
+    })
 
     return (
         <div>
@@ -107,11 +109,11 @@ function FetchData() {
             fetch("https://jsonplaceholder.typicode.com/todos/2").then((res) =>
                 res.json()
             ),
-    });
+    })
 
-    if (isPending) return <p>Loading</p>;
+    if (isPending) return <p>Loading</p>
 
-    if (error) return <p>Error fetching data!: {error.message}</p>;
+    if (error) return <p>Error fetching data!: {error.message}</p>
 
     return (
         <div>
@@ -128,5 +130,5 @@ function FetchData() {
                 <strong>IsCompleted: </strong> {data.completed}
             </p>
         </div>
-    );
+    )
 }

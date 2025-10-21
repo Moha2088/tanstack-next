@@ -1,62 +1,74 @@
-import { useState } from "react"
+import { ChangeEvent, useState } from "react"
 import { Todo } from "@/app/types/types"
 import Button from "@/app/components/ui/Button"
 
 interface PostFormProps {
-    HandleFormData (todo: Todo): void
+    HandleFormData(todo: Todo): void
 }
 
 export default function PostForm(props: PostFormProps) {
-    const [id, setId] = useState<number>();
+    const [id, setId] = useState<number>()
+    const [userId, setUserId] = useState<number>()
+    const [title, setTitle] = useState("")
+    const [completed, setCompleted] = useState<boolean>(false)
 
-    const [userId, setUserId] = useState<number>();
-
-    const [title, setTitle] = useState("");
-
-    const [completed, setCompleted] = useState<boolean>(false);
+    const handleDropdown = (selectEvent:ChangeEvent<HTMLSelectElement>) => {
+        setCompleted(Boolean(selectEvent.target.value))
+    }
 
     return (
-        <div className="flex justify-center items-center flex-col border-2 rounded-md p-5">
-            <form>
+        <div className="flex justify-center items-center flex-col rounded-md p-10 shadow-2xl">
+            <form
+                onSubmit={(event) => event.preventDefault() }
+                className="mb-5">
                 <div>
                     <label>Id</label>
-                    <input 
-                        className="border-2 rounded-md"
+                    <input
+                        className="border-2 rounded-md flex items-center p-1"
                         type="text"
-                        value={id} 
-                        onChange={(idInput) => setId(Number(idInput.target.value))} />
+                        value={id}
+                        onChange={(idInput) => setId(Number(idInput.target.value))}/>
                 </div>
                 <div>
                     <label>UserId</label>
-                    <input 
-                        className="border-2 rounded-md"
+                    <input
+                        className="border-2 rounded-md flex items-center p-1"
                         type="text"
-                        value={userId} 
+                        value={userId}
                         onChange={(userIdInput) => setUserId(Number(userIdInput.target.value))}/>
                 </div>
                 <div>
                     <label>Title</label>
-                    <input className="border-2 rounded-md" 
+                    <input className="border-2 rounded-md flex items-center p-1"
                            type="text"
-                           value={title} 
+                           value={title}
                            onChange={(titleInput) => setTitle(titleInput.target.value)}/>
                 </div>
                 <div>
                     <label>Completed</label>
-                    <input 
-                        className="border-2 rounded-md" 
-                        type="text"
-                        value={String(completed)}
-                        onChange={(completedInput) => setCompleted(Boolean(completedInput.target.value))} />
+                    <select
+                        id="completedDropdown"
+                        className="border-2 rounded-md flex items-center w-full"
+                        onChange={(event) => handleDropdown(event)}
+                    >
+                        <option>-- Please select a value --</option>
+                        <option value="True">
+                            True
+                        </option>
+                        <option value="False">
+                            False
+                        </option>
+                    </select>
                 </div>
             </form>
 
-            <Button onClick={() => props.HandleFormData({
-                id: id,
-                userId: userId,
-                title: title,
-                completed: completed,
-            })}>
+            <Button
+                onClick={() => props.HandleFormData({
+                    id: id,
+                    userId: userId,
+                    title: title,
+                    completed: completed,
+                })}>
                 Post Data
             </Button>
         </div>

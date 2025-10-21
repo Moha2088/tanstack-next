@@ -11,6 +11,7 @@ import { Todo } from "@/app/types/types"
 import { apiClient } from "@/app/api/apiClient"
 import Button from "@/app/components/ui/Button"
 import PostForm from "@/app/components/PostForm"
+import { Spinner } from "@/components/ui/shadcn-io/spinner"
 
 const queryClient = new QueryClient()
 
@@ -18,7 +19,7 @@ export default function Home() {
     const [fetchData, setFetchData] = useState<boolean>(false)
     const [postData, setPostData] = useState<boolean>(false)
 
-    const [idQuery, setIdQuery] = useState<number>(0)
+    const [idQuery, setIdQuery] = useState<string>("")
 
     const [todo, setTodo] = useState<Todo>()
 
@@ -33,6 +34,9 @@ export default function Home() {
         }
     }, [postData, fetchData])
 
+    const hasInput = () => {
+        return !Number.isNaN(Number(idQuery)) && idQuery.trim() != ""
+    }
 
     const handleFormData = (todo: Todo) => {
         setTodo(todo)
@@ -46,9 +50,10 @@ export default function Home() {
                     <input
                         className="border-2 rounded-md flex items-center p-1 mb-2"
                         value={idQuery}
-                        onChange={(val) => setIdQuery(Number(val.target.value))}/>
+                        onChange={(val) => setIdQuery(val.target.value)}/>
                     <div>
                         <Button
+                            disabled={!hasInput()}
                             onClick={() => setFetchData(true)}
                         >
                             Fetch Data
@@ -57,7 +62,7 @@ export default function Home() {
                 </div>
                 <div className="flex justify-center">
                     {fetchData &&
-                        <FetchData id={idQuery}/>
+                        <FetchData id={Number(idQuery)}/>
                     }</div>
                 <div>
                     <PostForm HandleFormData={handleFormData}/>
@@ -78,8 +83,6 @@ export default function Home() {
 }
 
 function PostData(todo: Todo) {
-    console.log("Completed value :" + todo.completed)
-
     const mutation = useMutation({
         mutationFn: async (newTodo: Todo) => {
             await apiClient.post(
@@ -89,14 +92,15 @@ function PostData(todo: Todo) {
         },
         onMutate: () => {
             console.log("Posting data..")
-    },
+        },
         onSuccess: () => {
             console.log("Data posted successfully")
         },
         onError: (err) => {
             console.log("Error fetching data:\n", `${err.name} : ${err.message}`)
             return
-        }
+        },
+
     })
 
     mutation.mutate({
@@ -123,7 +127,18 @@ function FetchData(props: FetchDataProps) {
             ),
     })
 
-    if (isPending) return <p>Fetching todo with id: {props.id}...</p>
+    if (isPending)
+        return (
+            <div className="flex justify-center items-center flex-col">
+                <Spinner
+                    className="text-shadow-gray-300"
+                    size={60}
+                    variant="circle-filled"/>
+                <div>
+                    <p>Fetching todo with id: {props.id}...</p>
+                </div>
+            </div>
+        )
 
     if (error) return <p>Error fetching data!: {error.message}</p>
 

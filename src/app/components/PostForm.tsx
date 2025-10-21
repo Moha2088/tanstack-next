@@ -77,8 +77,7 @@ export default function PostForm(props: PostFormProps) {
                     userId: userId,
                     title: title,
                     completed: completed,
-                })
-                }
+                })}
                 disabled={!hasInput()}>
                 Post Data
             </Button>

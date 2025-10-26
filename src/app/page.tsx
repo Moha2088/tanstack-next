@@ -11,32 +11,34 @@ import { Todo } from "@/app/types/types"
 import { apiClient } from "@/app/api/apiClient"
 import Button from "@/app/components/ui/Button"
 import PostForm from "@/app/components/PostForm"
+import { Spinner } from "@/components/ui/shadcn-io/spinner"
+import { toast } from "sonner"
 
 const queryClient = new QueryClient()
 
 export default function Home() {
     const [fetchData, setFetchData] = useState<boolean>(false)
-    const [postData, setPostData] = useState<boolean>(false)
 
-    const [idQuery, setIdQuery] = useState<number>(0)
+    const [idQuery, setIdQuery] = useState<string>("")
 
     const [todo, setTodo] = useState<Todo>()
 
     useEffect(() => {
-        if (postData) {
-            setPostData(false)
-        }
         if (fetchData) {
             setTimeout(() => {
                 setFetchData(false)
             }, 5000)
         }
-    }, [postData, fetchData])
+    }, [fetchData])
 
+    const hasInput = () => {
+        return !isNaN(Number(idQuery)) && idQuery.trim() != ""
+    }
 
     const handleFormData = (todo: Todo) => {
         setTodo(todo)
-        setPostData(true)
+        // setPostData(true)
+        PostData(todo)
     }
 
     return (
@@ -46,9 +48,10 @@ export default function Home() {
                     <input
                         className="border-2 rounded-md flex items-center p-1 mb-2"
                         value={idQuery}
-                        onChange={(val) => setIdQuery(Number(val.target.value))}/>
+                        onChange={(val) => setIdQuery(val.target.value)}/>
                     <div>
                         <Button
+                            disabled={!hasInput()}
                             onClick={() => setFetchData(true)}
                         >
                             Fetch Data
@@ -57,20 +60,10 @@ export default function Home() {
                 </div>
                 <div className="flex justify-center">
                     {fetchData &&
-                        <FetchData id={idQuery}/>
+                        <FetchData id={Number(idQuery)}/>
                     }</div>
                 <div>
                     <PostForm HandleFormData={handleFormData}/>
-
-                    <div>
-                        {postData &&
-                            <PostData
-                                id={todo?.id}
-                                userId={todo?.userId}
-                                title={todo?.title}
-                                completed={todo?.completed}/>
-                        }
-                    </div>
                 </div>
             </div>
         </QueryClientProvider>
@@ -78,8 +71,6 @@ export default function Home() {
 }
 
 function PostData(todo: Todo) {
-    console.log("Completed value :" + todo.completed)
-
     const mutation = useMutation({
         mutationFn: async (newTodo: Todo) => {
             await apiClient.post(
@@ -88,25 +79,32 @@ function PostData(todo: Todo) {
             )
         },
         onMutate: () => {
-            console.log("Posting data..")
-    },
+            toast.info("Posting data...")
+        },
         onSuccess: () => {
-            console.log("Data posted successfully")
+            toast.success("Data posted successfully!", {
+                description: `Id: ${todo.id}`,
+                action: {
+                    label: "Exit",
+                    onClick: () => {
+                    }
+                }
+            })
         },
         onError: (err) => {
-            console.log("Error fetching data:\n", `${err.name} : ${err.message}`)
+            toast.error(`Error posting data:\n${err.name} : ${err.message}`)
             return
-        }
+        },
     })
 
-    mutation.mutate({
-        id: todo.id,
-        userId: todo.userId,
-        title: todo.title,
-        completed: todo.completed,
-    })
-
-    return null
+    useEffect(() => {
+        mutation.mutate({
+            id: todo.id,
+            userId: todo.userId,
+            title: todo.title,
+            completed: todo.completed,
+        })
+    }, [mutation, todo])
 }
 
 
@@ -115,15 +113,38 @@ export interface FetchDataProps {
 }
 
 function FetchData(props: FetchDataProps) {
+    const { id } = props
+
     const {isPending, error, data} = useQuery({
         queryKey: ["todoData"],
         queryFn: () =>
-            fetch(`https://jsonplaceholder.typicode.com/todos/${props.id}`).then((res) =>
+            fetch(`https://jsonplaceholder.typicode.com/todos/${id}`).then((res) =>
                 res.json()
             ),
     })
 
-    if (isPending) return <p>Fetching todo with id: {props.id}...</p>
+    toast.info("Fetching data....", {
+        action: {
+            label: "Dismiss",
+            onClick: () => {
+            }
+        },
+        position: "bottom-center"
+    })
+
+    if (isPending) {
+        return (
+            <div className="flex justify-center items-center flex-col">
+                <Spinner
+                    className="text-shadow-gray-300"
+                    size={60}
+                    variant="circle-filled"/>
+                <div>
+                    <p>Fetching todo with id: {id}...</p>
+                </div>
+            </div>
+        )
+    }
 
     if (error) return <p>Error fetching data!: {error.message}</p>
 

@@ -7,8 +7,8 @@ interface PostFormProps {
 }
 
 export default function PostForm(props: PostFormProps) {
-    const [id, setId] = useState<number>()
-    const [userId, setUserId] = useState<number>()
+    const [id, setId] = useState<string>("")
+    const [userId, setUserId] = useState<string>("")
     const [title, setTitle] = useState("")
     const [completed, setCompleted] = useState<boolean>(false)
 
@@ -36,7 +36,7 @@ export default function PostForm(props: PostFormProps) {
                         className="border-2 rounded-md flex items-center p-1"
                         type="text"
                         value={id}
-                        onChange={(idInput) => setId(Number(idInput.target.value))}/>
+                        onChange={(idInput) => setId(idInput.target.value)}/>
                 </div>
                 <div>
                     <label>UserId</label>
@@ -44,7 +44,7 @@ export default function PostForm(props: PostFormProps) {
                         className="border-2 rounded-md flex items-center p-1"
                         type="text"
                         value={userId}
-                        onChange={(userIdInput) => setUserId(Number(userIdInput.target.value))}/>
+                        onChange={(userIdInput) => setUserId(userIdInput.target.value)}/>
                 </div>
                 <div>
                     <label>Title</label>
@@ -73,12 +73,11 @@ export default function PostForm(props: PostFormProps) {
 
             <Button
                 onClick={() => props.HandleFormData({
-                    id: id,
-                    userId: userId,
+                    id: Number(id),
+                    userId: Number(userId),
                     title: title,
                     completed: completed,
-                })
-                }
+                })}
                 disabled={!hasInput()}>
                 Post Data
             </Button>

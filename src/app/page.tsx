@@ -3,7 +3,7 @@
 import {
     QueryClient,
     QueryClientProvider,
-    useMutation,
+    useMutation, UseMutationOptions, UseMutationResult,
     useQuery,
 } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
@@ -21,7 +21,6 @@ export default function Home() {
 
     const [idQuery, setIdQuery] = useState<string>("")
 
-    const [todo, setTodo] = useState<Todo>()
 
     useEffect(() => {
         if (fetchData) {
@@ -35,10 +34,15 @@ export default function Home() {
         return !isNaN(Number(idQuery)) && idQuery.trim() != ""
     }
 
+    const postData = PostData({})
+
     const handleFormData = (todo: Todo) => {
-        setTodo(todo)
-        // setPostData(true)
-        PostData(todo)
+        postData.mutate({
+            id: todo.id,
+            userId: todo.userId,
+            title: todo.title,
+            completed: todo.completed
+        })
     }
 
     return (
@@ -70,20 +74,22 @@ export default function Home() {
     )
 }
 
-function PostData(todo: Todo) {
-    const mutation = useMutation({
-        mutationFn: async (newTodo: Todo) => {
+type Options = Partial<UseMutationOptions<void, unknown, Todo>>
+
+function PostData(options: Options = { }): UseMutationResult<void, Error, Todo> {
+    return useMutation({
+        mutationFn: async (variables) => {
             await apiClient.post(
                 "/todos",
-                newTodo
+                variables
             )
         },
         onMutate: () => {
             toast.info("Posting data...")
         },
-        onSuccess: () => {
+        onSuccess: (data, variables, onMutateResult, context) => {
             toast.success("Data posted successfully!", {
-                description: `Id: ${todo.id}`,
+                description: `Id: ${variables.id}`,
                 action: {
                     label: "Exit",
                     onClick: () => {
@@ -96,15 +102,6 @@ function PostData(todo: Todo) {
             return
         },
     })
-
-    useEffect(() => {
-        mutation.mutate({
-            id: todo.id,
-            userId: todo.userId,
-            title: todo.title,
-            completed: todo.completed,
-        })
-    }, [mutation, todo])
 }
 
 

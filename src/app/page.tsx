@@ -3,9 +3,9 @@
 import {
     QueryClient,
     QueryClientProvider,
-    useMutation, UseMutationOptions, UseMutationResult,
-    useQuery,
+    useMutation, UseMutationResult, useQuery,
 } from "@tanstack/react-query"
+
 import { useEffect, useState } from "react"
 import { Todo } from "@/app/types/types"
 import { apiClient } from "@/app/api/apiClient"
@@ -18,7 +18,6 @@ const queryClient = new QueryClient()
 
 export default function Home() {
     const [fetchData, setFetchData] = useState<boolean>(false)
-
     const [idQuery, setIdQuery] = useState<string>("")
 
 
@@ -34,16 +33,15 @@ export default function Home() {
         return !isNaN(Number(idQuery)) && idQuery.trim() != ""
     }
 
-    const postData = PostData({})
+    const postData = PostData()
 
-    const handleFormData = (todo: Todo) => {
+    const handleFormData = (todo: Todo) =>
         postData.mutate({
             id: todo.id,
             userId: todo.userId,
             title: todo.title,
             completed: todo.completed
         })
-    }
 
     return (
         <QueryClientProvider client={queryClient}>
@@ -74,9 +72,7 @@ export default function Home() {
     )
 }
 
-type Options = Partial<UseMutationOptions<void, unknown, Todo>>
-
-function PostData(options: Options = { }): UseMutationResult<void, Error, Todo> {
+function PostData(): UseMutationResult<void, Error, Todo> {
     return useMutation({
         mutationFn: async (variables) => {
             await apiClient.post(

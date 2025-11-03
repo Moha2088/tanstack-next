@@ -18,6 +18,7 @@ export function usePostTodo(): UseMutationResult<void, Error, Todo> {
         onSuccess: (data, variables, onMutateResult, context) => {
             toast.success("Data posted successfully!", {
                 description: `Id: ${variables.id}`,
+                position: "top-right",
                 action: {
                     label: "Exit",
                     onClick: () => {

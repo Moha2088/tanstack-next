@@ -1,20 +1,14 @@
 "use client"
 
-import {
-    QueryClient,
-    QueryClientProvider,
-    useMutation, UseMutationResult, useQuery,
-} from "@tanstack/react-query"
-
 import { useEffect, useState } from "react"
 import { Todo } from "@/app/types/types"
-import { apiClient } from "@/app/api/apiClient"
 import Button from "@/app/components/ui/Button"
 import PostForm from "@/app/components/PostForm"
 import { Spinner } from "@/components/ui/shadcn-io/spinner"
 import { toast } from "sonner"
+import { usePostTodo } from "@/app/hooks/usePostTodo"
+import { useFetchTodo } from "@/app/hooks/useFetchTodo"
 
-const queryClient = new QueryClient()
 
 export default function Home() {
     const [fetchData, setFetchData] = useState<boolean>(false)
@@ -33,18 +27,18 @@ export default function Home() {
         return !isNaN(Number(idQuery)) && idQuery.trim() != ""
     }
 
-    const postData = PostData()
+    const postDataMutation = usePostTodo()
 
-    const handleFormData = (todo: Todo) =>
-        postData.mutate({
+    const handleFormData = (todo: Todo) => {
+        postDataMutation.mutate({
             id: todo.id,
             userId: todo.userId,
             title: todo.title,
             completed: todo.completed
         })
+    }
 
     return (
-        <QueryClientProvider client={queryClient}>
             <div className="flex justify-center items-center mt-10 mb-10 flex-col">
                 <div className="flex justify-center items-center mb-10 flex-col">
                     <input
@@ -65,39 +59,10 @@ export default function Home() {
                         <FetchData id={Number(idQuery)}/>
                     }</div>
                 <div>
-                    <PostForm HandleFormData={handleFormData}/>
+                   <PostForm HandleFormData={handleFormData} />
                 </div>
             </div>
-        </QueryClientProvider>
     )
-}
-
-function PostData(): UseMutationResult<void, Error, Todo> {
-    return useMutation({
-        mutationFn: async (variables) => {
-            await apiClient.post(
-                "/todos",
-                variables
-            )
-        },
-        onMutate: () => {
-            toast.info("Posting data...")
-        },
-        onSuccess: (data, variables, onMutateResult, context) => {
-            toast.success("Data posted successfully!", {
-                description: `Id: ${variables.id}`,
-                action: {
-                    label: "Exit",
-                    onClick: () => {
-                    }
-                }
-            })
-        },
-        onError: (err) => {
-            toast.error(`Error posting data:\n${err.name} : ${err.message}`)
-            return
-        },
-    })
 }
 
 
@@ -108,13 +73,7 @@ export interface FetchDataProps {
 function FetchData(props: FetchDataProps) {
     const { id } = props
 
-    const {isPending, error, data} = useQuery({
-        queryKey: ["todoData"],
-        queryFn: () =>
-            fetch(`https://jsonplaceholder.typicode.com/todos/${id}`).then((res) =>
-                res.json()
-            ),
-    })
+    const {isPending, error, data} = useFetchTodo(id)
 
     toast.info("Fetching data....", {
         action: {

@@ -1,13 +1,12 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query"
 import { Todo } from "@/app/types/types"
+import { apiClient } from "@/app/api/apiClient"
 
 
 export function useFetchTodo(id: number): UseQueryResult<Todo, Error> {
     return useQuery({
         queryKey: ["todoData"],
         queryFn: () =>
-            fetch(`https://jsonplaceholder.typicode.com/todos/${id}`).then((res) =>
-                res.json()
-            ),
+            apiClient.get(`/todos/${id}`).then((res) => res.data),
     })
 }

@@ -39,29 +39,29 @@ export default function Home() {
     }
 
     return (
-            <div className="flex justify-center items-center mt-10 mb-10 flex-col">
-                <div className="flex justify-center items-center mb-10 flex-col">
-                    <input
-                        className="border-2 rounded-md flex items-center p-1 mb-2"
-                        value={idQuery}
-                        onChange={(val) => setIdQuery(val.target.value)}/>
-                    <div>
-                        <Button
-                            disabled={!hasInput()}
-                            onClick={() => setFetchData(true)}
-                        >
-                            Fetch Data
-                        </Button>
-                    </div>
-                </div>
-                <div className="flex justify-center">
-                    {fetchData &&
-                        <FetchData id={Number(idQuery)}/>
-                    }</div>
+        <div className="flex justify-center items-center mt-10 mb-10 flex-col">
+            <div className="flex justify-center items-center mb-10 flex-col">
+                <input
+                    className="border-2 rounded-md flex items-center p-1 mb-2"
+                    value={idQuery}
+                    onChange={(val) => setIdQuery(val.target.value)}/>
                 <div>
-                   <PostForm HandleFormData={handleFormData} />
+                    <Button
+                        disabled={!hasInput()}
+                        onClick={() => setFetchData(true)}
+                    >
+                        Fetch Data
+                    </Button>
                 </div>
             </div>
+            <div className="flex justify-center">
+                {fetchData &&
+                    <FetchData id={Number(idQuery)}/>
+                }</div>
+            <div>
+                <PostForm HandleFormData={handleFormData}/>
+            </div>
+        </div>
     )
 }
 
@@ -73,16 +73,8 @@ export interface FetchDataProps {
 function FetchData(props: FetchDataProps) {
     const { id } = props
 
-    const {isPending, error, data} = useFetchTodo(id)
+    const { isPending, isSuccess, error, data } = useFetchTodo(id)
 
-    toast.info("Fetching data....", {
-        action: {
-            label: "Dismiss",
-            onClick: () => {
-            }
-        },
-        position: "bottom-center"
-    })
 
     if (isPending) {
         return (
@@ -98,7 +90,18 @@ function FetchData(props: FetchDataProps) {
         )
     }
 
-    if (error) return <p>Error fetching data!: {error.message}</p>
+    if (isSuccess) {
+        toast.success(`Todo Id: ${id} has been fetched successfully!`, {
+            position: "top-right"
+        })
+    }
+
+    if (error) {
+        toast.error("Error fetching data", {
+            position: "top-right"
+        })
+        return
+    }
 
     return (
         <div>

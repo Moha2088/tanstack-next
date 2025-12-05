@@ -7,8 +7,6 @@ interface PostFormProps {
 }
 
 export default function PostForm(props: PostFormProps) {
-    const [id, setId] = useState<string>("")
-    const [userId, setUserId] = useState<string>("")
     const [title, setTitle] = useState("")
     const [completed, setCompleted] = useState<boolean>(false)
 
@@ -22,7 +20,7 @@ export default function PostForm(props: PostFormProps) {
     }
 
     const hasInput = () => {
-        return !isNaN(Number(id)) && !isNaN(Number(userId)) && title != ""
+        return title != ""
     }
 
     return (
@@ -30,22 +28,6 @@ export default function PostForm(props: PostFormProps) {
             <form
                 onSubmit={(event) => event.preventDefault()}
                 className="mb-5">
-                <div>
-                    <label>Id</label>
-                    <input
-                        className="border-2 rounded-md flex items-center p-1"
-                        type="text"
-                        value={id}
-                        onChange={(idInput) => setId(idInput.target.value)}/>
-                </div>
-                <div>
-                    <label>UserId</label>
-                    <input
-                        className="border-2 rounded-md flex items-center p-1"
-                        type="text"
-                        value={userId}
-                        onChange={(userIdInput) => setUserId(userIdInput.target.value)}/>
-                </div>
                 <div>
                     <label>Title</label>
                     <input className="border-2 rounded-md flex items-center p-1"
@@ -73,8 +55,6 @@ export default function PostForm(props: PostFormProps) {
 
             <Button
                 onClick={() => props.HandleFormData({
-                    id: Number(id),
-                    userId: Number(userId),
                     title: title,
                     completed: completed,
                 })}

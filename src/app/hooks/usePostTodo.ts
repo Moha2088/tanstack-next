@@ -8,21 +8,21 @@ export function usePostTodo(): UseMutationResult<void, Error, Todo> {
     return useMutation({
         mutationFn: async (variables) => {
             await apiClient.post(
-                "/todos",
+                "/",
                 variables
             )
         },
         onMutate: () => {
-            toast.info("Posting data...")
+            toast.info("Saving todo...")
         },
         onSuccess: (data, variables, onMutateResult, context) => {
+            alert(data)
             toast.success("Data posted successfully!", {
-                description: `Id: ${variables.id}`,
+                description: `Title: ${variables.title}\nStatus: ${variables.completed}`,
                 position: "top-right",
                 action: {
                     label: "Exit",
-                    onClick: () => {
-                    }
+                    onClick: () => {}
                 }
             })
         },

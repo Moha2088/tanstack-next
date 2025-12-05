@@ -6,8 +6,7 @@ import Button from "@/app/components/ui/Button"
 import PostForm from "@/app/components/PostForm"
 import { Spinner } from "@/components/ui/shadcn-io/spinner"
 import { toast } from "sonner"
-import { usePostTodo } from "@/app/hooks/usePostTodo"
-import { useFetchTodo } from "@/app/hooks/useFetchTodo"
+import { useFetchTodo, usePostTodo } from "@/app/hooks"
 
 
 export default function Home() {
@@ -31,8 +30,6 @@ export default function Home() {
 
     const handleFormData = (todo: Todo) => {
         postDataMutation.mutate({
-            id: todo.id,
-            userId: todo.userId,
             title: todo.title,
             completed: todo.completed
         })
@@ -108,12 +105,6 @@ function FetchData(props: FetchDataProps) {
             <h1>
                 <strong>Title: </strong> {data.title}
             </h1>
-            <p>
-                <strong>Id: </strong> {data.id}
-            </p>
-            <p>
-                <strong>UserId: </strong> {data.userId}
-            </p>
             <p>
                 <strong>IsCompleted: </strong> {data.completed}
             </p>

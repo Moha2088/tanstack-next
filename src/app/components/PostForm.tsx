@@ -1,9 +1,9 @@
 import { ChangeEvent, useState } from "react"
-import { Todo } from "@/app/types/types"
+import { PostTodoParams } from "@/app/types/types"
 import Button from "@/app/components/ui/Button"
 
 interface PostFormProps {
-    HandleFormData(todo: Todo): void
+    postTodo(params: PostTodoParams): void
 }
 
 export default function PostForm(props: PostFormProps) {
@@ -15,8 +15,7 @@ export default function PostForm(props: PostFormProps) {
             return
         }
 
-        setCompleted(selectEvent.target.value === "false")
-        console.log(completed)
+        setCompleted(selectEvent.target.value != "false")
     }
 
     const hasInput = () => {
@@ -29,14 +28,18 @@ export default function PostForm(props: PostFormProps) {
                 onSubmit={(event) => event.preventDefault()}
                 className="mb-5">
                 <div>
-                    <label>Title</label>
+                    <label>
+                        <strong>Title</strong>
+                    </label>
                     <input className="border-2 rounded-md flex items-center p-1"
                            type="text"
                            value={title}
                            onChange={(titleInput) => setTitle(titleInput.target.value)}/>
                 </div>
                 <div>
-                    <label>Completed</label>
+                    <label>
+                        <strong>Completed</strong>
+                    </label>
                     <select
                         id="completedDropdown"
                         className="border-2 rounded-md flex items-center w-full"
@@ -54,10 +57,14 @@ export default function PostForm(props: PostFormProps) {
             </form>
 
             <Button
-                onClick={() => props.HandleFormData({
-                    title: title,
-                    completed: completed,
-                })}
+                onClick={() =>{
+                    props.postTodo({
+                        title: title,
+                        completed: completed,
+                    })
+
+                    setTitle("")
+                }}
                 disabled={!hasInput()}>
                 Post Data
             </Button>

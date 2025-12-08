@@ -18,11 +18,11 @@ export default function TodoItem(props: TodoProps) {
 
     const [canUpdate, setCanUpdate] = useState<boolean>(false)
 
-
     return (
             <div className="flex flex-col justify-center rounded-lg border-2 p-5 min-w-40">
                 <div className="p-5">
-                    <p className={props.completed ? "text-green-400" : "text-red-400"}>{completed ? "Completed": "Not completed"}</p>
+                    <p className={`flex justify-center ${completed ? "text-green-400" : "text-red-400"}`}>{completed ? "Completed": "Not completed"}</p>
+                    <big className={`${completed ? "" : ""}`}></big>
                     <p className="flex justify-center text-lg"><strong>Task: {title} </strong></p>
                 </div>
                 <Button onClick={() => setCanUpdate(!canUpdate)}>

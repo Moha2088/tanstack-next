@@ -1,12 +1,21 @@
 import { ChangeEvent, useState } from "react"
-import { PostTodoParams } from "@/app/types/types"
+import { PostTodoParams } from "@/app/hooks"
+import { SubmitHandler, useForm } from "react-hook-form"
 import Button from "@/app/components/ui/Button"
 
 interface PostFormProps {
     postTodo(params: PostTodoParams): void
 }
 
+type PostFormInputs = {
+    title: string
+    completed: boolean
+}
+
+
 export default function PostForm(props: PostFormProps) {
+    const { register, handleSubmit, watch, formState: { errors } } = useForm<PostFormInputs>()
+
     const [title, setTitle] = useState("")
     const [completed, setCompleted] = useState<boolean>(false)
 
@@ -22,30 +31,42 @@ export default function PostForm(props: PostFormProps) {
         return title != ""
     }
 
+    const onSubmit: SubmitHandler<PostFormInputs> = () => {
+        props.postTodo({
+            title: title,
+            completed: completed,
+        })
+
+        setTitle("")
+    }
+
     return (
         <div className="flex justify-center items-center flex-col rounded-md p-10 shadow-2xl">
-            <form
-                onSubmit={(event) => event.preventDefault()}
-                className="mb-5">
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <div>
                     <label>
                         <strong>Title</strong>
                     </label>
-                    <input className="border-2 rounded-md flex items-center p-1"
-                           type="text"
-                           value={title}
-                           onChange={(titleInput) => setTitle(titleInput.target.value)}/>
+                    <input
+                        {...register("title", { required: true })}
+                        className="border-2 rounded-md flex items-center p-1"
+                        type="text"
+                        value={title}
+                        onChange={(titleInput) => setTitle(titleInput.target.value)}/>
+                    {errors.title && <span className="text-red-400">Title is required!</span>
+                    }
                 </div>
                 <div>
                     <label>
                         <strong>Completed</strong>
                     </label>
                     <select
-                        id="completedDropdown"
+                        {...register("completed", { required: true })}
+                        // id="completedDropdown"
                         className="border-2 rounded-md flex items-center w-full"
                         onChange={(event) => handleDropdown(event)}
                     >
-                        <option>-- Please select a value --</option>
+                        <option value="" />
                         <option value="true">
                             True
                         </option>
@@ -54,20 +75,14 @@ export default function PostForm(props: PostFormProps) {
                         </option>
                     </select>
                 </div>
+                <div className="flex justify-center p-3">
+                    <Button
+                        type="submit"
+                    >
+                        Post Data
+                    </Button>
+                </div>
             </form>
-
-            <Button
-                onClick={() =>{
-                    props.postTodo({
-                        title: title,
-                        completed: completed,
-                    })
-
-                    setTitle("")
-                }}
-                disabled={!hasInput()}>
-                Post Data
-            </Button>
         </div>
     )
 }

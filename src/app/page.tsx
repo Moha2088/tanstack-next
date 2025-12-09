@@ -6,6 +6,7 @@ import TodoItem from "@/app/components/TodoItem"
 import { UpdateTodoParams, useUpdateTodo } from "@/app/hooks/useUpdateTodo"
 import PostForm from "@/app/components/PostForm"
 import { DeleteTodoParams, useDeleteTodo } from "@/app/hooks/useDeleteTodo"
+import { Spinner } from "@/components/ui/shadcn-io/spinner"
 
 
 export default function Home() {
@@ -13,7 +14,7 @@ export default function Home() {
     const updateMutation = useUpdateTodo()
     const deleteMutation = useDeleteTodo()
 
-    const todos = useFetchTodos().data
+    const fetchTodosQuery = useFetchTodos()
 
 
     const postTodo = (params: PostTodoParams) => {
@@ -24,7 +25,6 @@ export default function Home() {
     }
 
     const updateTodo = (params: UpdateTodoParams) => {
-        alert("Updating todo: " + params.id)
         updateMutation.mutate({
             id: params.id,
             title: params.title,
@@ -32,12 +32,7 @@ export default function Home() {
         })
     }
 
-    const deleteTodo = (params: DeleteTodoParams) => {
-        alert("Deleting todo: " + params.id)
-        deleteMutation.mutate({
-            id: params.id
-        })
-    }
+    const deleteTodo = (params: DeleteTodoParams) => deleteMutation.mutate({ id: params.id })
 
 
     return (
@@ -46,13 +41,30 @@ export default function Home() {
                 <PostForm postTodo={postTodo} />
             </div>
 
-            <p className="flex justify-center font-bold text-2xl text-white bg-black p-4 rounded-md mb-5 min-w-40">Tasks</p>
+            <div className="p-5">
+                <p className="flex justify-center font-bold text-2xl text-white bg-black p-4 rounded-md mb-5 w-40">Tasks</p>
+            </div>
 
-            {todos && todos.length > 0 &&
-                todos.map(x => (
+            {fetchTodosQuery.isLoading &&
+                <div>
+                    <strong className="text-lg">Fetching todos...</strong>                    
+                    <div className="flex justify-center p-5">
+                        <Spinner size={40} />
+                    </div>
+                </div>
+            }
+
+            {fetchTodosQuery.data?.length == 0 &&
+                <div>
+                    <strong className="text-lg">No todos found!</strong>
+                </div>
+            }
+
+            {fetchTodosQuery.data && fetchTodosQuery.data.length > 0 &&
+                fetchTodosQuery.data.map(x => (
                     <TodoItem
+                        key={x.id}
                         id={x.id}
-                        key={x.title}
                         title={x.title}
                         completed={x.completed}
                         updateTodo={updateTodo}

@@ -2,6 +2,8 @@ import { ChangeEvent, useState } from "react"
 import { PostTodoParams } from "@/app/hooks"
 import { SubmitHandler, useForm } from "react-hook-form"
 import Button from "@/app/components/ui/Button"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
 
 interface PostFormProps {
     postTodo(params: PostTodoParams): void
@@ -9,7 +11,6 @@ interface PostFormProps {
 
 type PostFormInputs = {
     title: string
-    completed: boolean
 }
 
 
@@ -61,7 +62,6 @@ export default function PostForm(props: PostFormProps) {
                         <strong>Completed</strong>
                     </label>
                     <select
-                        {...register("completed", { required: true })}
                         // id="completedDropdown"
                         className="border-2 rounded-md flex items-center w-full"
                         onChange={(event) => handleDropdown(event)}

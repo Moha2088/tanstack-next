@@ -19,9 +19,11 @@ export function usePostTodo(): UseMutationResult<void, Error, PostTodoParams> {
                 variables
             )
         },
+        
         onMutate: () => {
             toast.info("Creating todo...")
         },
+
         onSuccess: (data, variables) => {
             toast.success("Data posted successfully!", {
                 description: `Title: ${variables.title}\nStatus: ${variables.completed}`,
@@ -35,6 +37,7 @@ export function usePostTodo(): UseMutationResult<void, Error, PostTodoParams> {
             queryInvalidator.invalidateTodos()
 
         },
+
         onError: (err) => {
             toast.error(`Error posting data:\n${err.name} : ${err.message}`)
             return

@@ -7,7 +7,7 @@ interface Result {
 
 export function useTodoInvalidator(): Result {
     const queryClient = useQueryClient()
-
+    
     return {
         invalidateTodos: () => queryClient.invalidateQueries({ queryKey: ["todos"] })
     }

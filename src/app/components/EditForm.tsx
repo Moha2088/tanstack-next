@@ -3,6 +3,8 @@ import { useState } from "react"
 import { UpdateTodoParams } from "@/app/hooks/useUpdateTodo"
 import { DeleteTodoParams } from "@/app/hooks/useDeleteTodo"
 import { SubmitHandler, useForm } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
 
 interface EditFormProps {
     id: number
@@ -14,6 +16,7 @@ interface EditFormProps {
 type EditFormInputs = {
     newTitle: string
 }
+
 
 export function EditForm(props: EditFormProps) {
     const { id, completed, updateTodo, deleteTodo } = props
@@ -39,11 +42,13 @@ export function EditForm(props: EditFormProps) {
                         type="text"
                         {...register("newTitle", { required: true })}
                     />
-                    { errors.newTitle &&
+
+                    {errors.newTitle &&
                         <div>
                             <span className="text-red-400">New title is required!</span>
                         </div>
                     }
+
                     <div className="flex justify-center p-5">
                         <Button
                             onClick={() => setNewStatus(!newStatus)}>
@@ -52,10 +57,19 @@ export function EditForm(props: EditFormProps) {
                     </div>
                 </div>
                 <div className="flex justify-center">
-                    <Button type="submit"> Update </Button>
-                    <Button onClick={() => {
-                        deleteTodo({id: id})
-                    }}>Delete</Button>
+                    <div className="p-2">
+                        <Button type="submit">
+                            Update 
+                        </Button>
+                    </div>
+                    <div className="p-2">
+                        <Button onClick={() => {
+                                deleteTodo({id: id})
+                            }}
+                        >
+                            Delete
+                        </Button>
+                    </div>
                 </div>
             </form>
         </div>

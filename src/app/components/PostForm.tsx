@@ -28,10 +28,6 @@ export default function PostForm(props: PostFormProps) {
         setCompleted(selectEvent.target.value != "false")
     }
 
-    const hasInput = () => {
-        return title != ""
-    }
-
     const onSubmit: SubmitHandler<PostFormInputs> = () => {
         props.postTodo({
             title: title,
@@ -75,10 +71,7 @@ export default function PostForm(props: PostFormProps) {
                     </select>
                 </div>
                 <div className="flex justify-center p-3">
-                    <Button
-                        disabled={!hasInput()}
-                        type="submit"
-                    >
+                    <Button type="submit">
                         Post Data
                     </Button>
                 </div>

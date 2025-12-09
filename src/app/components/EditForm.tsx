@@ -51,6 +51,7 @@ export function EditForm(props: EditFormProps) {
 
                     <div className="flex justify-center p-5">
                         <Button
+                            type="button"
                             onClick={() => setNewStatus(!newStatus)}>
                             {!newStatus ? "Complete task": "Uncomplete task"}
                         </Button>

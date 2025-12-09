@@ -1,3 +1,5 @@
 export * from "./usePostTodo"
 export * from "./useFetchTodos"
 export * from "./useTodoInvalidator"
+export * from "./useUpdateTodo"
+export * from "./useDeleteTodo"

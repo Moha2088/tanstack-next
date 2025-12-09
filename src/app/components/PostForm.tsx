@@ -77,6 +77,7 @@ export default function PostForm(props: PostFormProps) {
                 </div>
                 <div className="flex justify-center p-3">
                     <Button
+                        disabled={!hasInput()}
                         type="submit"
                     >
                         Post Data

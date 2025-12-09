@@ -54,8 +54,7 @@ export default function PostForm(props: PostFormProps) {
                         type="text"
                         value={title}
                         onChange={(titleInput) => setTitle(titleInput.target.value)}/>
-                    {errors.title && <span className="text-red-400">Title is required!</span>
-                    }
+                        {errors.title && <span className="text-red-400">Title is required!</span>}
                 </div>
                 <div>
                     <label>

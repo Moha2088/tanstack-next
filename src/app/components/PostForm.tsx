@@ -1,14 +1,20 @@
 import { ChangeEvent, useState } from "react"
-import { Todo } from "@/app/types/types"
+import { PostTodoParams } from "@/app/hooks"
+import { SubmitHandler, useForm } from "react-hook-form"
 import Button from "@/app/components/ui/Button"
 
 interface PostFormProps {
-    HandleFormData(todo: Todo): void
+    postTodo(params: PostTodoParams): void
 }
 
+type PostFormInputs = {
+    title: string
+}
+
+
 export default function PostForm(props: PostFormProps) {
-    const [id, setId] = useState<string>("")
-    const [userId, setUserId] = useState<string>("")
+    const { register, handleSubmit, watch, formState: { errors } } = useForm<PostFormInputs>()
+
     const [title, setTitle] = useState("")
     const [completed, setCompleted] = useState<boolean>(false)
 
@@ -17,50 +23,43 @@ export default function PostForm(props: PostFormProps) {
             return
         }
 
-        setCompleted(selectEvent.target.value === "false")
-        console.log(completed)
+        setCompleted(selectEvent.target.value != "false")
     }
 
-    const hasInput = () => {
-        return !isNaN(Number(id)) && !isNaN(Number(userId)) && title != ""
+    const onSubmit: SubmitHandler<PostFormInputs> = () => {
+        props.postTodo({
+            title: title,
+            completed: completed,
+        })
+
+        setTitle("")
     }
 
     return (
         <div className="flex justify-center items-center flex-col rounded-md p-10 shadow-2xl">
-            <form
-                onSubmit={(event) => event.preventDefault()}
-                className="mb-5">
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <div>
-                    <label>Id</label>
+                    <label>
+                        <strong>Title</strong>
+                    </label>
                     <input
+                        {...register("title", { required: true })}
                         className="border-2 rounded-md flex items-center p-1"
                         type="text"
-                        value={id}
-                        onChange={(idInput) => setId(idInput.target.value)}/>
+                        value={title}
+                        onChange={(titleInput) => setTitle(titleInput.target.value)}/>
+                        {errors.title && <span className="text-red-400">Title is required!</span>}
                 </div>
                 <div>
-                    <label>UserId</label>
-                    <input
-                        className="border-2 rounded-md flex items-center p-1"
-                        type="text"
-                        value={userId}
-                        onChange={(userIdInput) => setUserId(userIdInput.target.value)}/>
-                </div>
-                <div>
-                    <label>Title</label>
-                    <input className="border-2 rounded-md flex items-center p-1"
-                           type="text"
-                           value={title}
-                           onChange={(titleInput) => setTitle(titleInput.target.value)}/>
-                </div>
-                <div>
-                    <label>Completed</label>
+                    <label>
+                        <strong>Completed</strong>
+                    </label>
                     <select
-                        id="completedDropdown"
+                        // id="completedDropdown"
                         className="border-2 rounded-md flex items-center w-full"
                         onChange={(event) => handleDropdown(event)}
                     >
-                        <option>-- Please select a value --</option>
+                        <option value="" />
                         <option value="true">
                             True
                         </option>
@@ -69,18 +68,12 @@ export default function PostForm(props: PostFormProps) {
                         </option>
                     </select>
                 </div>
+                <div className="flex justify-center p-3">
+                    <Button type="submit">
+                        Post Data
+                    </Button>
+                </div>
             </form>
-
-            <Button
-                onClick={() => props.HandleFormData({
-                    id: Number(id),
-                    userId: Number(userId),
-                    title: title,
-                    completed: completed,
-                })}
-                disabled={!hasInput()}>
-                Post Data
-            </Button>
         </div>
     )
 }

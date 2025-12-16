@@ -1,31 +1,43 @@
 import { useMutation, UseMutationResult } from "@tanstack/react-query"
-import { Todo } from "@/app/types/types"
 import { apiClient } from "@/app/api/apiClient"
 import { toast } from "sonner"
+import { useTodoInvalidator } from "@/app/hooks/useTodoInvalidator"
+
+export interface PostTodoParams {
+    title: string
+    completed: boolean
+}
 
 
-export function usePostTodo(): UseMutationResult<void, Error, Todo> {
+export function usePostTodo(): UseMutationResult<void, Error, PostTodoParams> {
+    const queryInvalidator = useTodoInvalidator()
+
     return useMutation({
         mutationFn: async (variables) => {
             await apiClient.post(
-                "/todos",
+                "/",
                 variables
             )
         },
+        
         onMutate: () => {
-            toast.info("Posting data...")
+            toast.info("Creating todo...")
         },
-        onSuccess: (data, variables, onMutateResult, context) => {
+
+        onSuccess: (data, variables) => {
             toast.success("Data posted successfully!", {
-                description: `Id: ${variables.id}`,
+                description: `Title: ${variables.title}\nStatus: ${variables.completed}`,
                 position: "top-right",
                 action: {
                     label: "Exit",
-                    onClick: () => {
-                    }
+                    onClick: () => {}
                 }
             })
+
+            queryInvalidator.invalidateTodos()
+
         },
+
         onError: (err) => {
             toast.error(`Error posting data:\n${err.name} : ${err.message}`)
             return

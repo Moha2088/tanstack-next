@@ -2,8 +2,6 @@ import { ChangeEvent, useState } from "react"
 import { PostTodoParams } from "@/app/hooks"
 import { SubmitHandler, useForm } from "react-hook-form"
 import Button from "@/app/components/ui/Button"
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
 
 interface PostFormProps {
     postTodo(params: PostTodoParams): void

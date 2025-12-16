@@ -6,7 +6,6 @@ import { EditForm } from "@/app/components/EditForm"
 
 
 interface TodoProps {
-    id: number
     title: string
     completed: boolean
     updateTodo(params: UpdateTodoParams): void
@@ -14,24 +13,24 @@ interface TodoProps {
 }
 
 export default function TodoItem(props: TodoProps) {
-    const {id, title, completed, updateTodo, deleteTodo} = props
+    const {title, completed, updateTodo, deleteTodo} = props
 
     const [canUpdate, setCanUpdate] = useState<boolean>(false)
 
     return (
             <div className="flex flex-col justify-center rounded-lg border-2 p-5 min-w-40">
                 <div className="p-5">
-                    <p className={`flex justify-center ${completed ? "text-green-400" : "text-red-400"}`}>
-                        {completed ? "Completed": "Not completed"}
+                    <p className={`flex justify-center  ${completed ? "text-green-400" : "text-red-400 "}`}>
+                        <strong>{completed ? "Completed": "Not completed"}</strong>
                     </p>
                     <p className="flex justify-center text-lg"><strong>Task: {title} </strong></p>
                 </div>
-                <Button onClick={() => setCanUpdate(!canUpdate)}>
-                    {canUpdate ? "Cancel": "Edit"}
-                </Button>
+                
+                    <Button onClick={() => setCanUpdate(!canUpdate)}>
+                        {canUpdate ? "Cancel": "Edit"}
+                    </Button>
                 {canUpdate &&
                     <EditForm
-                        id={id}
                         completed={completed}
                         updateTodo={updateTodo}
                         deleteTodo={deleteTodo}

@@ -9,6 +9,7 @@ import {
 import TodoItem from "@/app/components/TodoItem"
 import PostForm from "@/app/components/PostForm"
 import { Spinner } from "@/components/ui/shadcn-io/spinner"
+import { TodoContext } from "./contexts/TodoContext"
 
 
 export default function Home() {
@@ -44,7 +45,7 @@ export default function Home() {
             </div>
 
             <div className="p-5">
-                <p className="flex justify-center font-bold text-2xl text-white bg-black p-4 rounded-md mb-5 w-40">Tasks</p>
+                <p className="flex justify-center font-bold text-2xl text-white bg-black p-4 rounded-md mb-5 w-40">Tasks: {fetchTodosQuery.data?.length}</p>
             </div>
 
             {fetchTodosQuery.isLoading &&
@@ -64,14 +65,17 @@ export default function Home() {
 
             {fetchTodosQuery.data && fetchTodosQuery.data.length > 0 &&
                 fetchTodosQuery.data.map(x => (
-                    <TodoItem
+                    <TodoContext 
+                        value={x.id} 
                         key={x.id}
-                        id={x.id}
-                        title={x.title}
-                        completed={x.completed}
-                        updateTodo={updateTodo}
-                        deleteTodo={deleteTodo}
-                    />
+                    >
+                            <TodoItem
+                            title={x.title}
+                            completed={x.completed}
+                            updateTodo={updateTodo}
+                            deleteTodo={deleteTodo}
+                            />
+                    </TodoContext>
                 ))
             }
         </div>
